@@ -53,8 +53,8 @@
 
   /* Layout */
   --container-max: 1280px;
-  --logo-h: 120px;         /* brief: mínimo 120px de altura */
-  --header-h: 140px;       /* fits 120px logo + 10px padding above/below */
+  --logo-h: 64px;          /* compact Apple-like header */
+  --header-h: 80px;        /* fits 64px logo + 8px padding above/below */
   --fab-size: 60px;
 }
 
@@ -237,7 +237,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 /* ---------- Hero (image carousel) ---------- */
 .hero {
   position: relative;
-  background: var(--color-text);
+  background: #f5f5f5;     /* matches off-white studio backdrop of source images */
   overflow: hidden;
 }
 
@@ -251,8 +251,10 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 @media (min-width: 768px) {
   .hero__carousel {
-    aspect-ratio: 16 / 9;  /* matches 1792x1024 source — zero crop */
-    max-height: 720px;
+    aspect-ratio: 16 / 9;  /* matches 1792x1024 source */
+    max-width: 1600px;
+    margin: 0 auto;
+    max-height: none;      /* let aspect-ratio govern — no crop */
   }
 }
 
@@ -279,12 +281,9 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 
 .hero__slide img {
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
-}
-
-@media (min-width: 768px) {
-  .hero__slide img { object-position: center; }
+  background: #f5f5f5;     /* matches source — invisible bands on wide viewports */
 }
 
 /* Hero overlay HTML removed — copy & gold panel agora estão embutidos
