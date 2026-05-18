@@ -251,13 +251,9 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 @media (min-width: 768px) {
   .hero__carousel {
-    aspect-ratio: 21 / 9;  /* desktop widescreen, gentle crop of 3:2 source */
-    max-height: 640px;
+    aspect-ratio: 16 / 9;  /* matches 1792x1024 source — zero crop */
+    max-height: 720px;
   }
-}
-
-@media (min-width: 1280px) {
-  .hero__carousel { aspect-ratio: 24 / 9; }
 }
 
 .hero__track {
@@ -288,7 +284,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 
 @media (min-width: 768px) {
-  .hero__slide img { object-position: center 40%; }
+  .hero__slide img { object-position: center; }
 }
 
 /* Hero overlay HTML removed — copy & gold panel agora estão embutidos
