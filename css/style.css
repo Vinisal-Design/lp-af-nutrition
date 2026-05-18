@@ -8,14 +8,17 @@
   --color-bg-soft:      #F8F6F0;   /* warm off-white, used sparingly */
   --color-surface:      #FFFFFF;
   --color-primary:      #C8951A;   /* AF Nutrition gold */
+  --color-accent:       #C8951A;   /* alias of primary — CTAs/highlights */
   --color-primary-dark: #A87A14;
   --color-primary-soft: rgba(200, 149, 26, 0.10);
   --color-text:         #0A0A0A;   /* near-black for body */
   --color-text-soft:    #4A4A4A;
   --color-muted:        #8A8A8A;
-  --color-border:       #ECE8DF;   /* warm subtle border */
+  --color-border:       #ECE8DF;
   --color-price:        #000000;   /* pure black, per brief */
   --color-strike:       #B8B8B8;
+  --color-chip-bg:      #F2EFE7;
+  --color-chip-text:    #4A4A4A;
   --color-whatsapp:     #25D366;
   --color-whatsapp-dark:#1DA851;
 
@@ -50,7 +53,8 @@
 
   /* Layout */
   --container-max: 1280px;
-  --header-h: 64px;
+  --logo-h: 120px;         /* brief: mínimo 120px de altura */
+  --header-h: 140px;       /* fits 120px logo + 10px padding above/below */
   --fab-size: 60px;
 }
 
@@ -165,32 +169,63 @@ ul { margin: 0; padding: 0; list-style: none; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: saturate(140%) blur(14px);
-  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(10, 10, 10, 0.04), 0 4px 12px rgba(10, 10, 10, 0.05);
   border-bottom: 1px solid var(--color-border);
 }
 
 .header__inner {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: var(--header-h);
+  justify-content: center;       /* mobile: logo centered */
+  min-height: var(--header-h);
+  padding: var(--sp-3) 0;
   gap: var(--sp-3);
+}
+
+@media (min-width: 768px) {
+  .header__inner {
+    justify-content: space-between;
+  }
 }
 
 .header__brand {
   display: inline-flex;
   align-items: center;
-  height: 36px;
+  height: var(--logo-h);
 }
 .header__brand svg,
-.header__brand img { height: 100%; width: auto; max-height: 36px; }
+.header__brand img {
+  height: 100%;
+  width: auto;
+  max-height: var(--logo-h);
+  display: block;
+}
 
 .header__brand:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 4px;
   border-radius: var(--r-sm);
+}
+
+/* Mobile: WA button absolute on the right, doesn't displace centered logo */
+.btn--header {
+  position: absolute;
+  right: var(--sp-4);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.55rem 0.85rem;
+  font-size: 0.82rem;
+}
+
+@media (min-width: 768px) {
+  .btn--header {
+    position: static;
+    transform: none;
+    padding: 0.7rem 1.1rem;
+    font-size: 0.9rem;
+  }
 }
 
 .btn--header .btn__label { display: none; }
@@ -468,53 +503,15 @@ ul { margin: 0; padding: 0; list-style: none; }
   outline-offset: 2px;
 }
 
-/* ---------- Featured cards (omegas) ---------- */
-.card--featured {
-  background: linear-gradient(135deg, var(--color-bg-soft) 0%, var(--color-surface) 60%);
-  border: 1px solid var(--color-border);
-  grid-column: 1 / -1;
-}
+/* ---------- Card uniformity reinforcement ---------- */
+/* All 10 cards must share identical structure & height — no variants. */
+.products__grid > .card { height: 100%; }
 
-@media (min-width: 768px) {
-  .card--featured { grid-column: span 2; }
-  .card--featured {
-    flex-direction: row;
-    align-items: stretch;
-  }
-  .card--featured .card__media {
-    flex: 0 0 48%;
-    aspect-ratio: auto;
-    padding: var(--sp-5);
-  }
-  .card--featured .card__body {
-    flex: 1;
-    padding: var(--sp-6);
-    gap: var(--sp-4);
-    justify-content: center;
-  }
-  .card--featured .card__title {
-    font-size: 1.35rem;
-    line-height: 1.2;
-  }
-  .card--featured .card__weight { font-size: 0.85rem; }
-  .card--featured .price__now { font-size: 1.65rem; }
-  .card--featured .card__cta { width: auto; align-self: flex-start; padding: 0.9rem 1.5rem; }
-}
+/* Subtitle line has fixed reserved height to avoid uneven rows when text missing */
+.card__weight { min-height: 1.2rem; display: block; }
 
-.card__featured-label {
-  position: absolute;
-  top: var(--sp-3);
-  left: var(--sp-3);
-  background: var(--color-primary);
-  color: var(--color-text);
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  padding: 0.3rem 0.7rem;
-  border-radius: var(--r-pill);
-  text-transform: uppercase;
-  z-index: 1;
-}
+/* CTA button height is fixed across cards */
+.card__cta { min-height: 48px; }
 
 /* ---------- Banner row ---------- */
 .banner--pair {
@@ -805,6 +802,129 @@ ul { margin: 0; padding: 0; list-style: none; }
   height: 8px;
   border-radius: 50%;
   background: var(--color-primary);
+}
+
+/* ---------- Benefit chips (in modal) ---------- */
+.benefit-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--color-chip-bg);
+  color: var(--color-chip-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.chip svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--color-primary);
+}
+
+@media (min-width: 480px) {
+  .chip { font-size: 0.8rem; padding: 6px 14px; }
+  .chip svg { width: 18px; height: 18px; }
+}
+
+/* ---------- Nutritional accordion ---------- */
+.nutri-accordion {
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.nutri-accordion[open] { box-shadow: var(--shadow-sm); }
+
+.nutri-accordion summary {
+  cursor: pointer;
+  padding: var(--sp-3) var(--sp-4);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  list-style: none;
+  background: var(--color-bg-soft);
+  transition: background-color 0.18s ease;
+}
+
+.nutri-accordion summary::-webkit-details-marker { display: none; }
+.nutri-accordion summary::after {
+  content: "";
+  margin-left: auto;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--color-text);
+  border-bottom: 2px solid var(--color-text);
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.nutri-accordion[open] summary::after { transform: rotate(-135deg); }
+
+.nutri-accordion summary:hover { background: var(--color-border); }
+
+.nutri-accordion summary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.nutri-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.nutri-table th,
+.nutri-table td {
+  border: 1px solid var(--color-border);
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.nutri-table thead {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.nutri-table thead th { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.02em; text-transform: uppercase; }
+
+.nutri-table tbody td:nth-child(2),
+.nutri-table tbody td:nth-child(3) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.nutri-table tbody tr:nth-child(odd) td { background: var(--color-bg-soft); }
+
+.nutri-footer {
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-bg-soft);
+  border-top: 1px solid var(--color-border);
+}
+
+.nutri-pending {
+  font-size: 0.82rem;
+  color: var(--color-text-soft);
+  background: var(--color-chip-bg);
+  border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4);
+  border-left: 3px solid var(--color-primary);
 }
 
 .doses {

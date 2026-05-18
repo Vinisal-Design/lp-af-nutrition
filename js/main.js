@@ -26,12 +26,12 @@ const originalFromPromo = (promo) => Math.round(promo * 1.15);
 const PRODUCT_WIDTHS = [400, 800, 1200];
 const BANNER_WIDTHS = [600, 1200];
 
-const productImg = (slug, featured = false) => ({
+const productImg = (slug) => ({
   slug,
   avif: PRODUCT_WIDTHS.map(w => `img/products/${slug}-${w}.avif ${w}w`).join(", "),
   webp: PRODUCT_WIDTHS.map(w => `img/products/${slug}-${w}.webp ${w}w`).join(", "),
   jpg: `img/products/${slug}-800.jpg`,
-  sizes: featured ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 768px) 300px, 50vw"
+  sizes: "(min-width: 768px) 300px, 50vw"
 });
 
 const bannerImg = (slug) => ({
@@ -190,9 +190,7 @@ const PRODUCTS = [
     name: "Ômega 3 · EPA 918 · DHA 360",
     weight: "1300 mg · alta concentração",
     price: 115,
-    featured: true,
-    featuredLabel: "Alta concentração",
-    img: productImg("omega-3-918-360", true),
+    img: productImg("omega-3-918-360"),
     shortDescription: "Ômega 3 alta concentração com EPA 918mg e DHA 360mg. Suporte completo ao coração, cérebro e visão com tecnologia MEG-3.",
     benefits: [
       "Potente ação anti-inflamatória",
@@ -211,9 +209,7 @@ const PRODUCTS = [
     name: "Ômega 3 · EPA 579 · DHA 379",
     weight: "958 mg · óleo de peixe puro",
     price: 99,
-    featured: true,
-    featuredLabel: "Linha clássica",
-    img: productImg("omega-3-579-379", true),
+    img: productImg("omega-3-579-379"),
     shortDescription: "Ômega 3 com EPA 579mg e DHA 379mg. Suporte cardiovascular, cognitivo e imunológico no formato clássico e acessível.",
     benefits: [
       "Ação anti-inflamatória",
@@ -239,7 +235,217 @@ const BANNERS = [
   { img: bannerImg("banner-nutri-hair"),            alt: "Nutri Hair Gum AF Nutrition", productId: "nutri-hair-gum" }
 ];
 
-/* ---------- Rendering ---------- */
+/* ---------- Chip icons (20×20, stroke: currentColor) ---------- */
+
+const CHIP_ICONS = {
+  "sem-gluten":  '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v14"/><path d="M10 6c-1.8 0-3-1.2-3.5-2"/><path d="M10 6c1.8 0 3-1.2 3.5-2"/><path d="M10 10c-1.8 0-3-1.2-3.5-2"/><path d="M10 10c1.8 0 3-1.2 3.5-2"/><path d="M10 14c-1.8 0-3-1.2-3.5-2"/><path d="M10 14c1.8 0 3-1.2 3.5-2"/><line x1="3" y1="17" x2="17" y2="3" stroke-width="2"/></svg>',
+  "sem-lactose": '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2c-2 3.5-4 6-4 10a4 4 0 0 0 8 0c0-4-2-6.5-4-10z"/><line x1="3" y1="17" x2="17" y2="3" stroke-width="2"/></svg>',
+  "creatina":    '<svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M11 2 4 11h4.5l-1 7L15 9h-4.5l.5-7z"/></svg>',
+  "colageno":    '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2c-4 0-6 3.5-6 7 0 4 2.5 8 6 9 3.5-1 6-5 6-9 0-3.5-2-7-6-7z"/><path d="M10 4v14"/><path d="M6 11h8"/></svg>',
+  "vitaminas":   '<svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M10 1.6 12.3 7l5.8.5-4.4 4 1.4 5.7L10 14.4 4.9 17.2 6.3 11.5 1.9 7.5l5.8-.5z"/></svg>',
+  "proteina":    '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="8.5" width="7" height="3" rx="0.5"/><rect x="3" y="6.5" width="2" height="7" rx="0.5"/><rect x="15" y="6.5" width="2" height="7" rx="0.5"/><line x1="5" y1="10" x2="6.5" y2="10"/><line x1="13.5" y1="10" x2="15" y2="10"/></svg>',
+  "energia":     '<svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M10 2c0 3-2.5 4-2.5 7a2.5 2.5 0 0 0 5 0c0-3-2.5-4-2.5-7zM7 12a4 4 0 0 0 6 0c.5 1.5-1 5-3 6-2-1-3.5-4.5-3-6z"/></svg>',
+  "omega-3":     '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13c2-3 4 0 7-2s5-3 9-1"/><path d="M2 8c2-3 4 0 7-2s5-3 9-1"/></svg>',
+  "zero-acucar": '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7"/><line x1="5" y1="5" x2="15" y2="15"/></svg>',
+  "fibras":      '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3c-3 0-6 2-6 5 0 2 1.5 3.5 3.5 4.5L6 17l4-3c3.5-1.5 6-4 6-7 0-3-3-4-6-4z"/></svg>',
+  "cafeina":     '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"/><path d="M14 9h2a2 2 0 0 1 0 4h-2"/><path d="M7 4c.5 1 0 2 .5 3"/><path d="M10 4c.5 1 0 2 .5 3"/></svg>',
+  "doses":       '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="14" height="13" rx="2"/><line x1="3" y1="9" x2="17" y2="9"/><line x1="7" y1="2" x2="7" y2="6"/><line x1="13" y1="2" x2="13" y2="6"/></svg>'
+};
+
+/* ---------- Product metadata: chips + nutritional table -----
+   Values from Produtos.md + brief Etapa 4. Where a complete table
+   was not available in source material, partial real data is shown
+   with a 'pending' note. No values are invented. */
+
+const PRODUCT_META = {
+  "gummy-creatina-uva": {
+    chips: [
+      { icon: "creatina",    label: "3000mg Creatina" },
+      { icon: "zero-acucar", label: "Zero açúcar" },
+      { icon: "sem-gluten",  label: "Sem glúten" },
+      { icon: "sem-lactose", label: "Sem lactose" }
+    ],
+    nutri: {
+      portion: "8g (1 unidade)",
+      servings: "30 doses",
+      rows: [
+        { name: "Valor energético", amount: "5 kcal",   vd: "0,3%" },
+        { name: "Carboidratos",     amount: "2,2 g",    vd: "0,7%" },
+        { name: "Polióis",          amount: "2,2 g",    vd: "—"   },
+        { name: "Creatina monohidratada", amount: "3000 mg", vd: "—" }
+      ]
+    }
+  },
+  "gummy-creatina-frutas-vermelhas": {
+    chips: [
+      { icon: "creatina",    label: "3000mg Creatina" },
+      { icon: "zero-acucar", label: "Zero açúcar" },
+      { icon: "sem-gluten",  label: "Sem glúten" },
+      { icon: "sem-lactose", label: "Sem lactose" }
+    ],
+    nutri: {
+      portion: "8g (1 unidade)",
+      servings: "30 doses",
+      rows: [
+        { name: "Valor energético", amount: "5 kcal",   vd: "0,3%" },
+        { name: "Carboidratos",     amount: "2,2 g",    vd: "0,7%" },
+        { name: "Polióis",          amount: "2,2 g",    vd: "—"   },
+        { name: "Creatina monohidratada", amount: "3000 mg", vd: "—" }
+      ]
+    }
+  },
+  "gummy-collagen": {
+    chips: [
+      { icon: "colageno",    label: "2,5g Colágeno Verisol®" },
+      { icon: "proteina",    label: "2,3g Proteína" },
+      { icon: "sem-gluten",  label: "Sem glúten" },
+      { icon: "sem-lactose", label: "Sem lactose" }
+    ],
+    nutri: {
+      portion: "8g (1 unidade)",
+      servings: "30 doses",
+      rows: [
+        { name: "Valor energético", amount: "16 kcal",  vd: "0,8%" },
+        { name: "Carboidratos",     amount: "3 g",      vd: "1%"   },
+        { name: "Polióis",          amount: "3 g",      vd: "—"    },
+        { name: "Proteínas",        amount: "2,3 g",    vd: "3,1%" },
+        { name: "Peptídeos de colágeno hidrolisado Verisol® 2kDa", amount: "2,5 g", vd: "—" }
+      ]
+    }
+  },
+  "creatina-caramelo-caramelo": {
+    chips: [
+      { icon: "creatina",    label: "3000mg Creatina" },
+      { icon: "energia",     label: "Energia & foco" },
+      { icon: "doses",       label: "30 doses" }
+    ],
+    nutri: {
+      portion: "13g (2 caramelos)",
+      servings: "30 doses",
+      rows: [
+        { name: "Valor energético", amount: "31 kcal",  vd: "1,5%" },
+        { name: "Carboidratos",     amount: "6 g",      vd: "2%"   },
+        { name: "Proteínas",        amount: "1,1 g",    vd: "1,5%" },
+        { name: "Gorduras totais",  amount: "0,9 g",    vd: "1,6%" },
+        { name: "Fibras alimentares", amount: "1,3 g",  vd: "5,2%" },
+        { name: "Sódio",            amount: "23 mg",    vd: "1%"   },
+        { name: "Creatina monohidratada", amount: "3000 mg", vd: "—" }
+      ]
+    }
+  },
+  "creatina-caramelo-brigadeiro": {
+    chips: [
+      { icon: "creatina",    label: "3000mg Creatina" },
+      { icon: "energia",     label: "Energia & foco" },
+      { icon: "doses",       label: "30 doses" }
+    ],
+    nutri: {
+      portion: "13g (2 caramelos)",
+      servings: "30 doses",
+      rows: [
+        { name: "Valor energético", amount: "30 kcal",  vd: "1,5%" },
+        { name: "Carboidratos",     amount: "5,5 g",    vd: "1,8%" },
+        { name: "Proteínas",        amount: "1,1 g",    vd: "1,5%" },
+        { name: "Gorduras totais",  amount: "0,9 g",    vd: "1,6%" },
+        { name: "Fibras alimentares", amount: "1,3 g",  vd: "5,2%" },
+        { name: "Sódio",            amount: "21 mg",    vd: "0,9%" },
+        { name: "Creatina monohidratada", amount: "3000 mg", vd: "—" }
+      ]
+    }
+  },
+  "creatina-efervescente": {
+    chips: [
+      { icon: "creatina",    label: "3000mg Creatina" },
+      { icon: "energia",     label: "Absorção rápida" },
+      { icon: "zero-acucar", label: "Zero açúcar" }
+    ],
+    nutri: {
+      portion: "8g (1 dose)",
+      servings: "30 doses",
+      rows: [
+        { name: "Valor energético", amount: "5 kcal",   vd: "0,3%" },
+        { name: "Carboidratos",     amount: "2,2 g",    vd: "0,7%" },
+        { name: "Creatina monohidratada", amount: "3000 mg", vd: "—" }
+      ]
+    }
+  },
+  "formula-coffee": {
+    chips: [
+      { icon: "cafeina",     label: "Cafeína 100mg" },
+      { icon: "colageno",    label: "Colágeno 2,5g" },
+      { icon: "vitaminas",   label: "Complexo B + Cromo" },
+      { icon: "energia",     label: "TCM + Carnitina" }
+    ],
+    nutri: {
+      portion: "10g (1 dose)",
+      servings: "22 doses",
+      rows: [
+        { name: "Valor energético",  amount: "35 kcal",  vd: "1,8%" },
+        { name: "Carboidratos",      amount: "3 g",      vd: "1%"   },
+        { name: "Proteínas",         amount: "2,4 g",    vd: "3,2%" },
+        { name: "Colágeno hidrolisado", amount: "2,5 g", vd: "—"   },
+        { name: "Gorduras totais",   amount: "1,3 g",    vd: "2,4%" },
+        { name: "Fibras alimentares", amount: "2,4 g",   vd: "9,6%" },
+        { name: "Sódio",             amount: "22 mg",    vd: "0,9%" },
+        { name: "Cafeína",           amount: "100 mg",   vd: "—"   },
+        { name: "Ácido clorogênico", amount: "50 mg",    vd: "—"   },
+        { name: "Carnitina",         amount: "100 mg",   vd: "—"   },
+        { name: "Coenzima Q10",      amount: "50 mg",    vd: "—"   },
+        { name: "Colina",            amount: "150 mg",   vd: "27%"  },
+        { name: "Cromo",             amount: "250 µg",   vd: "714%" },
+        { name: "L-Tirosina",        amount: "263 mg",   vd: "—"   },
+        { name: "Taurina",           amount: "650 mg",   vd: "—"   },
+        { name: "Ácido fólico",      amount: "210 µg",   vd: "53%"  },
+        { name: "Vitamina B1 (tiamina)", amount: "1,2 mg", vd: "100%" },
+        { name: "Vitamina B2 (riboflavina)", amount: "1,2 mg", vd: "92%" },
+        { name: "Vitamina B6 (piridoxina)", amount: "1,3 mg", vd: "100%" },
+        { name: "Vitamina B12 (metilcobalamina)", amount: "2,4 µg", vd: "100%" },
+        { name: "Niacina",           amount: "7,5 mg",   vd: "47%"  }
+      ]
+    }
+  },
+  "omega-3-918-360": {
+    chips: [
+      { icon: "omega-3",    label: "EPA 918mg" },
+      { icon: "omega-3",    label: "DHA 360mg" },
+      { icon: "vitaminas",  label: "Tecnologia MEG-3" }
+    ],
+    nutri: {
+      portion: "1 cápsula softgel (1300 mg)",
+      servings: "60 cápsulas",
+      rows: [
+        { name: "EPA (ácido eicosapentaenoico)", amount: "918 mg", vd: "—" },
+        { name: "DHA (ácido docosahexaenoico)",  amount: "360 mg", vd: "—" }
+      ],
+      pending: "Outros valores (kcal, gorduras totais) — em breve."
+    }
+  },
+  "omega-3-579-379": {
+    chips: [
+      { icon: "omega-3",    label: "EPA 579mg" },
+      { icon: "omega-3",    label: "DHA 379mg" },
+      { icon: "vitaminas",  label: "Tecnologia MEG-3" }
+    ],
+    nutri: {
+      portion: "1 cápsula softgel (958 mg)",
+      servings: "60 cápsulas",
+      rows: [
+        { name: "EPA (ácido eicosapentaenoico)", amount: "579 mg", vd: "—" },
+        { name: "DHA (ácido docosahexaenoico)",  amount: "379 mg", vd: "—" }
+      ],
+      pending: "Outros valores (kcal, gorduras totais) — em breve."
+    }
+  },
+  "nutri-hair-gum": {
+    chips: [
+      { icon: "vitaminas",  label: "Biotina + Zinco" },
+      { icon: "vitaminas",  label: "Vitaminas A, E, B" },
+      { icon: "sem-gluten", label: "Sem glúten" }
+    ],
+    nutri: null,
+    nutriNote: "Composição completa com Biotina, Zinco, Vitaminas A, E, B3, B5, B6, Iodo e Selênio. Valores em mg/µg — tabela completa em breve."
+  }
+};
 
 const escapeHtml = (str) => String(str).replace(/[&<>"']/g, (ch) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -260,13 +466,10 @@ const productCardHtml = (p, index) => {
   const eager = index < 4;
   const loadAttr = eager ? "eager" : "lazy";
   const priorityAttr = index === 0 ? ' fetchpriority="high"' : "";
-  const featuredClass = p.featured ? " card--featured" : "";
-  const featuredLabel = p.featured && p.featuredLabel
-    ? `<span class="card__featured-label">${escapeHtml(p.featuredLabel)}</span>`
-    : "";
+  // Subtitle always present — non-breaking space fallback to preserve uniform row height
+  const weight = p.weight && p.weight.trim() ? escapeHtml(p.weight) : "&nbsp;";
   return `
-  <article class="card${featuredClass}" data-product-id="${p.id}">
-    ${featuredLabel}
+  <article class="card" data-product-id="${p.id}">
     <button class="card__media" data-open="${p.id}" aria-label="Ver detalhes de ${escapeHtml(p.name)}">
       <picture>
         <source type="image/avif" srcset="${p.img.avif}" sizes="${p.img.sizes}">
@@ -276,7 +479,7 @@ const productCardHtml = (p, index) => {
     </button>
     <div class="card__body">
       <h3 class="card__title">${escapeHtml(p.name)}</h3>
-      <p class="card__weight">${escapeHtml(p.weight)}</p>
+      <p class="card__weight">${weight}</p>
       ${priceMarkup(p.price)}
       <button class="card__cta" data-open="${p.id}" type="button">Ver detalhes</button>
     </div>
@@ -323,8 +526,50 @@ const modal = document.getElementById("product-modal");
 const modalBody = document.getElementById("modal-body");
 let lastFocusedElement = null;
 
+const chipsHtml = (chips) => {
+  if (!chips || !chips.length) return "";
+  return `
+    <div class="benefit-chips" role="list">
+      ${chips.map((c) => `
+        <span class="chip" role="listitem">
+          ${CHIP_ICONS[c.icon] || ""}
+          <span>${escapeHtml(c.label)}</span>
+        </span>
+      `).join("")}
+    </div>
+  `;
+};
+
+const nutriTableHtml = (meta) => {
+  if (!meta) {
+    return `<p class="nutri-pending">⚠️ Tabela nutricional em breve.</p>`;
+  }
+  const { nutri, nutriNote } = meta;
+  if (!nutri) {
+    return `<p class="nutri-pending">⚠️ ${escapeHtml(nutriNote || "Tabela nutricional em breve.")}</p>`;
+  }
+  const rows = nutri.rows.map((r) =>
+    `<tr><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.amount)}</td><td>${escapeHtml(r.vd)}</td></tr>`
+  ).join("");
+  const pending = nutri.pending
+    ? `<p class="nutri-pending">⚠️ ${escapeHtml(nutri.pending)}</p>`
+    : "";
+  return `
+    <details class="nutri-accordion">
+      <summary>📊 Informação Nutricional — Porção ${escapeHtml(nutri.portion)} · ${escapeHtml(nutri.servings)}</summary>
+      <table class="nutri-table">
+        <thead><tr><th>Nutriente</th><th>Por porção</th><th>%VD*</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <p class="nutri-footer">*%VD com base em dieta de 2000 kcal. "—" = não estabelecido pela ANVISA ou em análise.</p>
+      ${pending}
+    </details>
+  `;
+};
+
 const renderModalContent = (p) => {
   const original = originalFromPromo(p.price);
+  const meta = PRODUCT_META[p.id];
   return `
     <div class="modal__media">
       <picture>
@@ -337,6 +582,8 @@ const renderModalContent = (p) => {
       <h2 class="modal__title" id="modal-title">${escapeHtml(p.name)}</h2>
       <p class="modal__weight">${escapeHtml(p.weight)}</p>
       <p class="modal__description">${escapeHtml(p.shortDescription)}</p>
+
+      ${chipsHtml(meta && meta.chips)}
 
       <div>
         <p class="benefits-title">Benefícios</p>
@@ -352,6 +599,8 @@ const renderModalContent = (p) => {
       </div>
 
       <p class="usage"><strong>Como usar:</strong> ${escapeHtml(p.usage)}</p>
+
+      ${nutriTableHtml(meta)}
 
       <div class="modal__prices">
         <span class="price__from">de ${formatBRL(original)}</span>
