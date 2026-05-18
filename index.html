@@ -16,12 +16,12 @@
   <link rel="dns-prefetch" href="https://wa.me">
 
   <link rel="preload" as="image" type="image/avif"
-        imagesrcset="img/products/gummy-creatina-uva-400.avif 400w, img/products/gummy-creatina-uva-800.avif 800w"
-        imagesizes="(min-width: 768px) 300px, 50vw"
+        imagesrcset="img/hero/hero-creatina-800.avif 800w, img/hero/hero-creatina-1200.avif 1200w, img/hero/hero-creatina-1600.avif 1600w"
+        imagesizes="100vw"
         fetchpriority="high">
   <link rel="preload" as="image" type="image/webp"
-        imagesrcset="img/products/gummy-creatina-uva-400.webp 400w, img/products/gummy-creatina-uva-800.webp 800w"
-        imagesizes="(min-width: 768px) 300px, 50vw">
+        imagesrcset="img/hero/hero-creatina-800.webp 800w, img/hero/hero-creatina-1200.webp 1200w, img/hero/hero-creatina-1600.webp 1600w"
+        imagesizes="100vw">
 
   <link rel="stylesheet" href="css/style.min.css">
   <link rel="icon" type="image/svg+xml" href="img/brand/logo-af-nutrition.svg">
@@ -42,23 +42,38 @@
   </header>
 
   <main id="top">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="container hero__inner">
-        <p class="hero__eyebrow">A Fórmula apresenta</p>
-        <h1 id="hero-title">A linha <span class="hero__accent">AF Nutrition</span></h1>
-        <p class="hero__lead">Suplementos formulados para performance, beleza e bem-estar. Pedido direto, sem complicação — pelo WhatsApp.</p>
-        <div class="hero__actions">
-          <a href="#produtos" class="btn btn--primary btn--lg">Ver os 10 produtos</a>
-          <a id="hero-cta" class="btn btn--whatsapp btn--lg" href="#" rel="noopener">
-            <svg class="icon-wa" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.5 14.4c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.6-.4M12 2.2C6.6 2.2 2.2 6.6 2.2 12c0 1.7.5 3.4 1.3 4.9L2.1 21.8 7 20.5c1.5.8 3.2 1.2 4.9 1.2 5.4 0 9.8-4.4 9.8-9.8S17.4 2.2 12 2.2"/></svg>
-            <span class="btn__label">Falar com especialista</span>
+    <section class="hero" aria-label="Linha AF Nutrition em destaque">
+      <div class="hero__carousel" id="hero-carousel">
+        <div class="hero__track" id="hero-track">
+          <a class="hero__slide" id="hero-slide-creatina" href="#" rel="noopener" aria-label="Gummy Creatina — Performance que rende. Falar no WhatsApp.">
+            <picture>
+              <source type="image/avif" srcset="img/hero/hero-creatina-800.avif 800w, img/hero/hero-creatina-1200.avif 1200w, img/hero/hero-creatina-1600.avif 1600w" sizes="100vw">
+              <source type="image/webp" srcset="img/hero/hero-creatina-800.webp 800w, img/hero/hero-creatina-1200.webp 1200w, img/hero/hero-creatina-1600.webp 1600w" sizes="100vw">
+              <img src="img/hero/hero-creatina-1200.jpg" alt="Gummy Creatina AF Nutrition — Performance que rende. 3000mg por dose. Frete grátis pelo WhatsApp." width="1536" height="1024" loading="eager" decoding="async" fetchpriority="high">
+            </picture>
+          </a>
+          <a class="hero__slide" id="hero-slide-coffee" href="#" rel="noopener" aria-label="Fórmula Coffee — Foco e energia. Falar no WhatsApp.">
+            <picture>
+              <source type="image/avif" srcset="img/hero/hero-coffee-800.avif 800w, img/hero/hero-coffee-1200.avif 1200w, img/hero/hero-coffee-1600.avif 1600w" sizes="100vw">
+              <source type="image/webp" srcset="img/hero/hero-coffee-800.webp 800w, img/hero/hero-coffee-1200.webp 1200w, img/hero/hero-coffee-1600.webp 1600w" sizes="100vw">
+              <img src="img/hero/hero-coffee-1200.jpg" alt="Fórmula Coffee AF Nutrition — Foco e energia. Café funcional com TCM, colágeno e fibras. Frete grátis pelo WhatsApp." width="1536" height="1024" loading="lazy" decoding="async">
+            </picture>
+          </a>
+          <a class="hero__slide" id="hero-slide-collagen" href="#" rel="noopener" aria-label="Gummy Colágeno — Beleza por dentro. Falar no WhatsApp.">
+            <picture>
+              <source type="image/avif" srcset="img/hero/hero-collagen-800.avif 800w, img/hero/hero-collagen-1200.avif 1200w, img/hero/hero-collagen-1600.avif 1600w" sizes="100vw">
+              <source type="image/webp" srcset="img/hero/hero-collagen-800.webp 800w, img/hero/hero-collagen-1200.webp 1200w, img/hero/hero-collagen-1600.webp 1600w" sizes="100vw">
+              <img src="img/hero/hero-collagen-1200.jpg" alt="Gummy Colágeno AF Nutrition — Beleza por dentro. Pele, cabelo e unhas mais bonitos. Frete grátis pelo WhatsApp." width="1536" height="1024" loading="lazy" decoding="async">
+            </picture>
           </a>
         </div>
-        <ul class="hero__badges">
-          <li>Sem glúten</li>
-          <li>Sem lactose</li>
-          <li>Fórmula A Fórmula</li>
-        </ul>
+        <button class="hero__nav hero__nav--prev" id="hero-prev" type="button" aria-label="Banner anterior">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg>
+        </button>
+        <button class="hero__nav hero__nav--next" id="hero-next" type="button" aria-label="Próximo banner">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8.6 16.6 10 18l6-6-6-6-1.4 1.4L13.2 12z"/></svg>
+        </button>
+        <div class="hero__dots" id="hero-dots" role="tablist" aria-label="Selecionar banner"></div>
       </div>
     </section>
 

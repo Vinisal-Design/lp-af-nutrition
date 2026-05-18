@@ -389,11 +389,104 @@ const closeModal = () => {
 /* ---------- Wiring ---------- */
 
 const wireCtas = () => {
-  const url = buildWaUrl();
-  ["header-cta", "hero-cta", "footer-cta", "fab-whatsapp"].forEach((id) => {
+  const generic = buildWaUrl();
+  ["header-cta", "footer-cta", "fab-whatsapp"].forEach((id) => {
     const el = document.getElementById(id);
-    if (el) el.href = url;
+    if (el) el.href = generic;
   });
+  // Hero slides: each links to a product-specific message
+  const heroLinks = {
+    "hero-slide-creatina": "Gummy Creatina",
+    "hero-slide-coffee": "Fórmula Coffee",
+    "hero-slide-collagen": "Gummy Colágeno"
+  };
+  Object.entries(heroLinks).forEach(([id, product]) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.href = buildWaUrl(product);
+      el.target = "_blank";
+    }
+  });
+};
+
+const wireHeroCarousel = () => {
+  const track = document.getElementById("hero-track");
+  const dots = document.getElementById("hero-dots");
+  const prev = document.getElementById("hero-prev");
+  const next = document.getElementById("hero-next");
+  if (!track || !dots) return;
+
+  const slides = Array.from(track.children);
+  const count = slides.length;
+  if (count <= 1) return;
+
+  let current = 0;
+  let autoplayId = null;
+  const AUTOPLAY_MS = 6500;
+
+  // Build dots
+  dots.innerHTML = slides.map((_, i) =>
+    `<button class="hero__dot" type="button" role="tab" aria-label="Banner ${i + 1}" data-index="${i}"${i === 0 ? ' aria-current="true"' : ""}></button>`
+  ).join("");
+
+  const update = () => {
+    track.style.transform = `translateX(-${current * 100}%)`;
+    dots.querySelectorAll(".hero__dot").forEach((d, i) => {
+      if (i === current) d.setAttribute("aria-current", "true");
+      else d.removeAttribute("aria-current");
+    });
+  };
+
+  const goTo = (i) => {
+    current = ((i % count) + count) % count;
+    update();
+  };
+
+  const stopAutoplay = () => {
+    if (autoplayId) { clearInterval(autoplayId); autoplayId = null; }
+  };
+  const startAutoplay = () => {
+    stopAutoplay();
+    autoplayId = setInterval(() => goTo(current + 1), AUTOPLAY_MS);
+  };
+
+  prev && prev.addEventListener("click", () => { goTo(current - 1); startAutoplay(); });
+  next && next.addEventListener("click", () => { goTo(current + 1); startAutoplay(); });
+
+  dots.addEventListener("click", (e) => {
+    const dot = e.target.closest(".hero__dot");
+    if (!dot) return;
+    goTo(parseInt(dot.dataset.index, 10));
+    startAutoplay();
+  });
+
+  // Pause on hover (desktop)
+  track.parentElement.addEventListener("mouseenter", stopAutoplay);
+  track.parentElement.addEventListener("mouseleave", startAutoplay);
+
+  // Touch swipe
+  let startX = 0;
+  let dx = 0;
+  track.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+    dx = 0;
+    stopAutoplay();
+  }, { passive: true });
+  track.addEventListener("touchmove", (e) => {
+    dx = e.touches[0].clientX - startX;
+  }, { passive: true });
+  track.addEventListener("touchend", () => {
+    if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+    startAutoplay();
+  });
+
+  // Pause when tab is hidden
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopAutoplay();
+    else startAutoplay();
+  });
+
+  startAutoplay();
 };
 
 const wireFab = () => {
@@ -443,4 +536,5 @@ document.addEventListener("DOMContentLoaded", () => {
   wireCtas();
   wireEvents();
   wireFab();
+  wireHeroCarousel();
 });
